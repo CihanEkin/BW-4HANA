@@ -1,0 +1,26 @@
+@AbapCatalog.sqlViewName: 'Zhv_sd_Acksip'
+@ClientDependent: true
+@AbapCatalog.compiler.CompareFilter: true
+@EndUserText.label: 'SD Açik Siparisler'
+define view Zhv_Vsd_Acksip as 
+
+
+select from vbak
+inner join vbap on vbap.vbeln = vbak.vbeln
+left outer join zhv_lips_vbfa on zhv_lips_vbfa.vbeln_va = vbap.vbeln and
+                                 zhv_lips_vbfa.posnr_va = vbap.posnr
+inner join kna1 on kna1.kunnr = vbak.kunnr
+inner join mara on mara.matnr = vbap.matnr
+left outer join makt on makt.matnr = vbap.matnr and makt.spras = 'T'
+                                 
+
+ {
+ key vbap.vbeln, key vbap.posnr,vbap.matnr, 
+ vbap.kwmeng,  vbap.vrkme, 
+ vbak.kunnr, vbak.vkorg, vbak.vtweg, vbak.erdat,
+ vbap.werks, vbap.lgort,
+ kna1.name1 as kunnm, makt.maktx,
+ 
+ @Semantics.quantity.unitOfMeasure : 'VRKME' vbap.kwmeng - coalesce( zhv_lips_vbfa.lfimg, 0) as  acksp
+     
+}
