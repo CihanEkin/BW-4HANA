@@ -1,0 +1,139 @@
+@ClientDependent: true 
+@AbapCatalog.sqlViewName: 'ZSALES_RP_CDS'
+@AbapCatalog.compiler.CompareFilter: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Sales Budget Report (ZSALES_BUDGET_DDL_CDS)'
+define view Zsales_Budget_Ddl_Cds as  
+    select from vbrk as vbrk
+    inner join vbrp as vbrp on vbrp.vbeln = vbrk.vbeln    
+    inner join knvv as knvv on knvv.kunnr = vbrk.kunrg
+                           and knvv.vkorg = vbrk.vkorg
+                           and knvv.vtweg = vbrk.vtweg
+                           and knvv.spart = vbrk.spart
+    inner join kna1 as kna1 on knvv.kunnr = kna1.kunnr
+                               
+    left outer join likp as likp   on likp.vbeln = vbrp.vgbel
+    left outer join lips as lips   on lips.vbeln = vbrp.vgbel
+                                  and lips.posnr = vbrp.vgpos 
+    left outer join kna1 as kna1_we on kna1_we.kunnr = likp.kunnr
+                               
+//Teslim alan
+    left outer join knvv as knvv_we on knvv_we.kunnr = likp.kunnr
+                                   and knvv_we.vkorg = likp.vkorg
+                                   and knvv_we.vtweg = lips.vtweg
+                                   and knvv_we.spart = lips.spart
+                                   
+
+                           
+
+    inner join vbak as vbak on vbak.vbeln = vbrp.aubel
+    inner join vbap as vbap on vbap.vbeln = vbrp.aubel   
+                           and vbap.posnr = vbrp.aupos 
+    inner join mara as mara on mara.matnr = vbrp.matnr
+    
+    left outer join mvke as mvke on mvke.matnr = vbrp.matnr
+                                and mvke.vkorg = vbrk.vkorg
+                                and mvke.vtweg = vbrk.vtweg
+//                                
+//Proforma     
+    left outer join vbfa as pvbfa  on pvbfa.vbeln = vbrp.aubel
+                                  and pvbfa.posnn = vbrp.aupos
+                                  and pvbfa.vbtyp_v = 'B'                                
+//Teklif     
+    left outer join vbfa as tvbfa  on tvbfa.vbeln = vbrp.aubel
+                                  and tvbfa.posnn = vbrp.aupos
+                                  and tvbfa.vbtyp_v = 'A'    
+             
+//EXPT için ülke açiklamasi
+    left outer join t005t on t005t.land1 = vbrk.land1 
+                         and t005t.spras = 'T'
+ 
+    
+ {  key vbrk.vbeln,
+    key vbrp.posnr,    
+    vbrk.vkorg, 
+    vbrk.vtweg, 
+    vbrk.kunrg,
+    vbrk.kunag,
+    vbrk.waerk, 
+    vbrk.zterm, 
+    vbrk.fkdat, 
+    vbrk.fkart, 
+    vbrk.land1, 
+    vbrk.kdgrp, 
+    vbrk.fksto, 
+    vbrk.knumv, 
+    vbrk.bukrs, 
+    vbrk.sfakn, 
+    vbrk.kunrg  as kunnr, 
+    
+    pvbfa.vbelv as profm,
+    tvbfa.vbelv as teklf,
+    
+    mvke.bonus,
+    mvke.mvgr1,
+    mvke.mvgr2,
+    mvke.mvgr3,
+    mvke.mvgr4,
+    mvke.mvgr5,
+    mvke.kondm,
+    mvke.zdenet,
+
+ 
+    
+    mara.mtart, 
+    mara.prdha,
+    kna1.niels, 
+ 
+    kna1.zzkund2,    
+    kna1.ktokd, 
+    knvv.spart, 
+    
+    
+    vbak.submi, 
+    vbak.augru, 
+    vbak.ernam, 
+    vbak.erdat,
+    vbak.auart,
+    
+    
+    knvv.vkbur,  
+    knvv.vkgrp,
+
+    vbak.vkbur as svkbur,  
+    vbak.vkgrp as svkgrp,  
+
+    vbrp.vkbur as fvkbur,  
+    vbrp.vkgrp as fvkgrp,  
+
+    knvv_we.vkbur as we_vkbur,  
+    knvv_we.vkgrp as we_vkgrp,  
+    likp.kunnr as kunwe,
+
+
+    vbrp.shkzg, 
+    vbrp.matkl, 
+    vbrp.matnr, 
+    vbrp.fkimg, 
+    vbrp.vrkme, 
+    vbrp.ntgew, 
+    vbrp.gewei, 
+    vbrp.kzwi1, 
+    vbrp.netwr, 
+    vbrp.vgbel, 
+    vbrp.vgpos,     
+    vbrp.aubel, 
+    vbrp.aupos, 
+    vbrp.bonba, 
+    vbrp.prctr, 
+    vbrp.knuma_ag,
+    vbrp.zzkamp, 
+    vbrp.zzkamp2, 
+    vbrp.arktx,
+    vbrp.werks,
+    vbrp.kursk,
+    vbrp.lgort,
+    t005t.landx,
+    vbrp.brgew
+}
+
